@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html ng-app='myApp'>
+  <head>
+    <meta charset="utf-8">
+    <title>Angular</title>
+    <script src ="angular/angular.js" charset="utf-8"></script>
+    <script type='text/javascript'>
+      var myAppModule = angular.module('myApp', []);
+      // the .controller() method adds a controller to the module
+      myAppModule.controller('divController', function ($scope){
+        $scope.items = [];
+
+        $scope.add_item = function(){
+          $scope.items.push($scope.new_item)
+          $scope.new_item = ""
+        }
+      });
+
+    </script>
+</head>
+  </head>
+  <body>
+    <div ng-controller='divController'>
+      <form ng-submit="add_item()">
+        <label>Favorite Food: </label><input type="text" ng-model="new_item"> <input type="submit" value="Add Item">
+      </form>
+      <p>Currently Typing: {{ new_item }}</p>
+      <label>Show Searchbar: <input type="checkbox" ng-model="checked" ng-init="checked=true" /></label>
+      <div ng-show="checked">
+        <label>Search: <input ng-model="searchText"></label>
+      </div>
+        <table id="searchTextResults">
+          <tr><th>Item Name</th></tr>
+          <tr ng-repeat="item in items | filter:searchText">
+            <td>{{item}}</td>
+          </tr>
+        </table>
+    </div>
+  </body>
+</html>

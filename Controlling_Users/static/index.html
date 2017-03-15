@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Controlling Users</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script src ="angular/angular.js" charset="utf-8"></script>
+    <script type='text/javascript'>
+      var myAppModule = angular.module('myApp', []);
+
+      myAppModule.controller('userController',  function($scope){
+        // $scope.printIndex = function(val){
+        //   console.log(val);
+        // };
+        $scope.users= [];
+
+        $scope.add_user = function(){
+          $scope.users.push($scope.new_user);
+          $scope.new_user = {}
+        };
+        $scope.deleteUser = function(userToDelete){
+          $scope.users = $scope.users.filter( function(user){
+            return user !== userToDelete;
+          })
+        }
+
+      })
+    </script>
+    <style>
+      #first_name{
+        width: 300px;
+      }
+      #last_name{
+        width: 300px;
+      }
+      #language{
+        width: 300px;
+      }
+    </style>
+  </head>
+  <body ng-controller="userController">
+    <div class="container">
+
+        <legend><h2>Users Controller</h2></legend>
+        <form ng-submit="add_user()">
+          <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" class="form-control" id="first_name" ng-model="new_user.first_name" placeholder="Enter First Name">
+          </div>
+          <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            <input type="text" class="form-control" id="last_name" ng-model="new_user.last_name" placeholder="Enter Last Name">
+          </div>
+          <div class="form-group">
+            <label for="language">Favorite Language:</label>
+            <input type="text" class="form-control" id="language" ng-model="new_user.language" placeholder="Enter Language">
+          </div>
+          <button type="submit" class="btn btn-default">Create User</button>
+        </form>
+    </div>
+    <br/>
+    <div class="container">
+      <div class="row">
+
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr><th>First Name</th><th>Last Name</th><th>Fav Language</th><th>Actions</th></tr>
+              <tr ng-repeat="user in users">
+                <td>{{user.first_name}}</td>
+                <td>{{user.last_name}}</td>
+                <td>{{user.language}}</td>
+                <td><button ng-click="deleteUser(user)">Delete</button></td>
+              </tr>
+          </table>
+
+      </div>
+    </div>
+
+    <!-- <div ng-repeat="n in [42, 42, 43, 43] track by $index">
+      {{n}}
+      <button ng-click = 'printIndex($index)'>Click</button>
+    </div> -->
+  </body>
+</html>
