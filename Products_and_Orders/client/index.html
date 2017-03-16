@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <title>P with F</title>
+    <script src ="angular/angular.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      var app = angular.module('app', [])
+      app.factory('productFactory', ['$http', function($http) {
+        var factory = {};
+        var products = [
+          {name: "ball", price: 1.99, quantity: 50},
+          {name: "truck", price: 15.99, quantity: 50},
+          {name: "He-Man", price: 3.50, quantity: 50}
+        ];
+        factory.index = function(callback){
+          //callback is the function that is passed to the productIndex by the controller, in this caseP: setProducts.
+          callback(products);
+        }
+        factory.create = function(product, callback){
+          product.quantity = 50;
+          products.push(product);
+          callback(products);
+        }
+        factory.delete = function(id, callback){
+          products.splice(id,1);
+          callback(products);
+        }
+        factory.update = function(id, callback){
+          if (products[id].quantity - 1 > 0) {
+                products[id].quantity -= 1;
+          } else {
+                products[id].quantity = 0;
+          }
+          callback(products);
+        }
+        return factory;
+      }]);
+
+      app.controller('productController', ['$scope','productFactory', function($scope, productFactory) {
+        // callback, but not as an anonymous function, rather a named function!
+        function setProducts(data){
+          $scope.products = data;
+          $scope.product = {};
+        }
+
+        $scope.product = {};
+        $scope.products = {};
+
+        $scope.index = function(){
+          productFactory.index(setProducts);
+        }
+
+        $scope.index();
+        $scope.create = function(){
+          productFactory.create($scope.product, setProducts);
+        }
+        $scope.delete = function(item){
+          var index = $scope.products.indexOf(item)
+          productFactory.delete(index, setProducts);
+        }
+
+      }]);
+      app.controller('orderController', ['$scope','productFactory', function($scope, productFactory) {
+        function setProducts(data){
+          $scope.products = data;
+          $scope.product = {};
+        }
+
+        $scope.products = [];
+
+        $scope.index = function(){
+          productFactory.index(setProducts);
+        }
+        $scope.index();
+
+        $scope.update = function(item){
+          var index = $scope.products.indexOf(item)
+          productFactory.update(index, setProducts)
+        }
+      }]);
+    </script>
+    <style>
+      div {
+          margin-top: 20px;
+          margin-bottom: 10px;
+      }
+      table {
+          margin-top: 30px;
+          width: 100%;
+          border-collapse: collapse;
+          border-spacing: 0;
+      }
+      td,
+      th {
+          border: 1px solid #CCC;
+      }
+      input {
+          display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div ng-controller = "productController">
+      <fieldset><legend>Products Controller</legend>
+        <form ng-submit = "create()">
+          <label> Product Name </label>
+          <input type="text" ng-model = "product.name">
+          <label> Product Price </label>
+          <input type="number" step="0.01" ng-model = "product.price">
+          <input type="submit" value = "Add Product">
+        </form>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody ng-repeat="product in products | orderBy: 'price'">
+            <tr>
+              <td>{{product.name}}</td>
+              <td>{{product.price | currency:"USD $"}}</td>
+              <td><button ng-click = "delete(product)">Delete Product</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+    </div>
+    <div ng-controller="orderController">
+      <fieldset><legend>Order Controller</legend>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Qty Available</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody ng-repeat="product in products | orderBy: 'price'">
+            <tr>
+              <td>{{product.name}}</td>
+              <td>{{product.price | currency:"USD $"}}</td>
+              <td>{{product.quantity}}</td>
+              <td><button ng-click = "update(product)">Buy</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+    </div>
+  </body>
+</html>

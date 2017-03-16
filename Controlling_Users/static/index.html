@@ -24,10 +24,12 @@
         $scope.users= [];
 
         $scope.add_user = function(){
+          console.log("hello?!?!")
           $scope.users.push($scope.new_user);
           $scope.new_user = {}
         };
         $scope.deleteUser = function(userToDelete){
+          console.log("why does nothing log???");
           $scope.users = $scope.users.filter( function(user){
             return user !== userToDelete;
           })
